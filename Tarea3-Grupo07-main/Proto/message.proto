@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package grpc;
+
+option go_package = "SD/LAB3/proto";
+
+/*
+Aca lo que se define es un servicio, en el fondo es el recurso que alguno de los integrantes del sistema
+usaran en las llamadas gRPC, por lo que debe tener un Input (que es lo que se enviara desde el solicitante)
+y un Output (que es lo que se retorna desde quien recibio la solicitud)
+*/
+service MessageService {
+    
+    // Funciones Vanguardia - Broker
+    rpc GetPlanet(SolicitudPlaneta) returns (PlanetaDesignado);
+
+    // Funciones Vanguardia-Planeta
+    rpc AgregarBase(Crear) returns (CodigoRespuesta);
+    rpc RenombrarBase(CambioNombre)returns (CodigoRespuesta);
+    rpc ActualizarValor(Actualizar)returns (CodigoRespuesta);
+    rpc BorrarBase(Borrar)returns (CodigoRespuesta);
+
+    // Funciones Guardianes-Broker
+    rpc GetSoldados(SoldadosRequest)returns (SoldadosAnswer);
+
+    // Funciones Broker - Planeta
+    rpc SoldadosQuery(SoldadosRequest) returns (SoldadosAnswer);
+
+    // Funciones Planeta coordinador - Planetas esclavos
+    rpc MergeRequest(Signal) returns (MergeAnswerString);
+    rpc Consistencia(Consistency) returns (Ack);
+}
+
+// Planeta coordinador - Planetas esclavos
+
+message Consistency{
+    string actualizar=1;
+    repeated int32 relojVectorial=2;
+}
+
+message Ack{
+    int32 recibo=1;
+}
+
+message Signal{
+    int32 aviso=1;
+}
+
+message MergeAnswerString{
+    string logs=1;
+    repeated int32 relojVectorial=2;
+}
+
+message SolicitudPlaneta{
+    string solicitud=1;
+}
+message PlanetaDesignado{
+    string direccionAsignada=1;
+    string puertoAsignado=2;
+}
+
+//Mensajes Vanguardia- Broker
+message Crear{
+    string sector=1;
+    string base=2;
+    string valor=3;  //int32 check cambio
+}
+message CambioNombre{
+    string sector =1;
+    string nombreOriginal=2;
+    string nombreNuevo=3;
+}
+message Actualizar{
+    string sector=1;
+    string base=2;
+    string nuevoValor=3;  //int32 check cambio
+}
+message Borrar{
+    string sector=1;
+    string base=2;
+}
+message CodigoRespuesta {
+    int32 codigo = 1;
+    string planeta=2;
+    repeated int32 relojVectorial=3;
+}
+
+//Mensajes Guardianes - Broker y Broker - Planeta
+message SoldadosRequest{
+    string sector=1;
+    string base=2;
+}
+message SoldadosAnswer{
+    int32 cantidadSoldados=1;
+    string planetaEmisor=2;
+    repeated int32 relojVectorial=3;
+}

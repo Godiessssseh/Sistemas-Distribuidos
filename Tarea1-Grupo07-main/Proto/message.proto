@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package grpc;
+
+option go_package = "SD/LAB1/proto";
+
+/*
+Aca lo que se define es un servicio, en el fondo es el recurso que alguno de los integrantes del sistema
+usaran en las llamadas gRPC, por lo que debe tener un Input (que es lo que se enviara desde el solicitante)
+y un Output (que es lo que se retorna desde quien recibio la solicitud)
+*/
+service MessageService {
+    /*
+    Aca se dice que la funcion se llama Itercambio y recibe como parametro un dato de tipo mensaje y 
+    retorna otro dato de tipo mensaje. NO NECESARIAMENTE EL RETURN DEBE SER DEL MISMO TIPO DE DATO QUE 
+    EL INPUT
+    */
+    rpc Intercambio (Message) returns (Message); 
+    rpc Revision (Revisando) returns (Revisando); 
+}
+
+/*
+Aca se define el tipo de dato Message, se debe indicar:
+1) Tipo de dato
+2) Nombre de la variable
+3) Numeros de campo: Numeros que identifican cada campo dentro del mensaje en formato binario. Numeros 
+                    entre el 1 y el 15 deben usarse con los datos que mas se usaran ya que solo usan 1 byte
+*/
+message Message {
+    string body = 1;
+    int32 equipo =2;
+}
+message Revisando {
+    string mensaje = 1;
+    int32 equipo =2;
+}
